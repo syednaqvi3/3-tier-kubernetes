@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>3 Tier App</title>
+</head>
+<body>
+  <h2>Add User</h2>
+
+  <input type="text" id="name" placeholder="Name"><br><br>
+  <input type="email" id="email" placeholder="Email"><br><br>
+  <button onclick="addUser()">Add User</button>
+
+  <h2>Users List</h2>
+  <button onclick="loadUsers()">Load Users</button>
+  <ul id="users"></ul>
+
+  <script>
+    const API = "http://16.171.39.41:31720";
+
+    function addUser() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      fetch(API + "/add-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, email })
+      })
+      .then(res => res.text())
+      .then(data => alert(data));
+    }
+
+    function loadUsers() {
+      fetch(API + "/users")
+        .then(res => res.json())
+        .then(data => {
+          const list = document.getElementById("users");
+          list.innerHTML = "";
+
+          data.forEach(user => {
+            const li = document.createElement("li");
+            li.textContent = user.name + " - " + user.email;
+            list.appendChild(li);
+          });
+        });
+    }
+  </script>
+</body>
+</html>
